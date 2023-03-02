@@ -46,12 +46,18 @@ if answer.lower() == "y":
         url = "https://es.wikipedia.org/" + image["href"]
 
         headers = {
-            'User-Agent': 'My User Agent 1.0'
+            'User-Agent': 'Scraping images from wikipedia'
         }
         request = requests.get(url)
         soup = BeautifulSoup(request.content, "html.parser")
         imageSoup = soup.find("div", class_="fullImageLink")
-        imageSoup = imageSoup.find("a")["href"].replace("//", "https://")
+        
+        try:
+            imageSoup = imageSoup.find("a")["href"].replace("//", "https://")
+        except AttributeError:
+            print("No image found")
+            continue
+
         request = requests.get(imageSoup, headers=headers, stream=True)
 
         title = soup.find("head").find("title").text
